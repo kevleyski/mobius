@@ -175,7 +175,7 @@ PUBLIC void WindowsCheckbox::open()
               printf("Unable to create Checkbox control\n");
             else {
                 subclassWindowProc();
-                SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
+                SetWindowLong(mHandle, GWL_USERDATA, (LONG)this);
 				mCheckbox->initVisibility();
 				setSelected(initialValue);
             }

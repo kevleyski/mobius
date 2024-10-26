@@ -33,9 +33,6 @@
 
 #ifdef _WIN32
 
-// define with dllexport to avoid having to have a .def file
-#define VST_EXPORT extern "C" __declspec(dllexport)
-
 #include <windows.h>
 #include "UIwindows.h"
 // have been using 2.3
@@ -79,7 +76,16 @@ BOOL WINAPI DllMain (HINSTANCE hInst, DWORD dwReason, LPVOID lpvReserved)
 	return 1;
 }
 
-VST_EXPORT AEffect* VSTPluginMain (audioMasterCallback audioMaster)
+// define with dllexport to avoid having to have a .def file
+// VC8 started whining about main returning a pointer, pray
+// that an int and a pointer are the same size!
+
+//extern "C" __declspec(dllexport) AEffect *main (audioMasterCallback audioMaster);
+
+extern "C" __declspec(dllexport) int main (audioMasterCallback audioMaster);
+
+//AEffect *main (audioMasterCallback audioMaster)
+int main (audioMasterCallback audioMaster)
 {
 	AEffect* effect = NULL;
 
@@ -97,11 +103,8 @@ VST_EXPORT AEffect* VSTPluginMain (audioMasterCallback audioMaster)
 		effect = mobius->getAeffect();
 	}
 
-	return effect;
+	return (int)effect;
 }
-
-// fallback support for old hosts not supporting VSTPluginMain
-VST_EXPORT AEffect* MAIN (audioMasterCallback audioMaster) { return VSTPluginMain (audioMaster); }
 
 #endif
 

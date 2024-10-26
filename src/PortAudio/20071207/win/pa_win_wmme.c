@@ -155,6 +155,13 @@ Non-critical stuff for the future:
 #pragma comment(lib, "winmm.lib")
 #endif
 
+/*
+ provided in newer platform sdks
+ */
+#ifndef DWORD_PTR
+#define DWORD_PTR DWORD
+#endif
+
 /************************************************* Constants ********/
 
 #define PA_MME_USE_HIGH_DEFAULT_LATENCY_    (0)  /* For debugging glitches. */
@@ -188,13 +195,6 @@ Non-critical stuff for the future:
 
 static const char constInputMapperSuffix_[] = " - Input";
 static const char constOutputMapperSuffix_[] = " - Output";
-
-/* returns required length (in bytes) of destination buffer when
-   converting WCHAR string to UTF8 bytes, not including the terminating null. */
-static size_t WCharStringLen(const WCHAR* str)
-{
-    return WideCharToMultiByte(CP_UTF8, 0, str, -1, NULL, 0, NULL, NULL);
-}
 
 /********************************************************************/
 
@@ -626,8 +626,7 @@ static PaError InitializeInputDeviceInfo( PaWinMmeHostApiRepresentation *winMmeH
     MMRESULT mmresult;
     WAVEINCAPS wic;
     PaDeviceInfo *deviceInfo = &winMmeDeviceInfo->inheritedDeviceInfo;
-    size_t len;
-
+    
     *success = 0;
 
     mmresult = waveInGetDevCaps( winMmeInputDeviceId, &wic, sizeof( WAVEINCAPS ) );
@@ -648,10 +647,9 @@ static PaError InitializeInputDeviceInfo( PaWinMmeHostApiRepresentation *winMmeH
 
     if( winMmeInputDeviceId == WAVE_MAPPER )
     {
-        len = WCharStringLen(wic.szPname) + 1 + sizeof(constInputMapperSuffix_);
         /* Append I/O suffix to WAVE_MAPPER device. */
         deviceName = (char *)PaUtil_GroupAllocateMemory(
-                    winMmeHostApi->allocations, (long)len );
+                    winMmeHostApi->allocations, strlen( wic.szPname ) + 1 + sizeof(constInputMapperSuffix_) );
         if( !deviceName )
         {
             result = paInsufficientMemory;
@@ -662,9 +660,8 @@ static PaError InitializeInputDeviceInfo( PaWinMmeHostApiRepresentation *winMmeH
     }
     else
     {
-        len = WCharStringLen(wic.szPname) + 1;
         deviceName = (char*)PaUtil_GroupAllocateMemory(
-                    winMmeHostApi->allocations, (long)len );
+                    winMmeHostApi->allocations, strlen( wic.szPname ) + 1 );
         if( !deviceName )
         {
             result = paInsufficientMemory;
@@ -752,7 +749,6 @@ static PaError InitializeOutputDeviceInfo( PaWinMmeHostApiRepresentation *winMme
     MMRESULT mmresult;
     WAVEOUTCAPS woc;
     PaDeviceInfo *deviceInfo = &winMmeDeviceInfo->inheritedDeviceInfo;
-    size_t len;
 
     *success = 0;
 
@@ -774,10 +770,9 @@ static PaError InitializeOutputDeviceInfo( PaWinMmeHostApiRepresentation *winMme
 
     if( winMmeOutputDeviceId == WAVE_MAPPER )
     {
-        len = WCharStringLen(woc.szPname) + 1 + sizeof(constOutputMapperSuffix_);
         /* Append I/O suffix to WAVE_MAPPER device. */
         deviceName = (char *)PaUtil_GroupAllocateMemory(
-                    winMmeHostApi->allocations, (long)len );
+                    winMmeHostApi->allocations, strlen( woc.szPname ) + 1 + sizeof(constOutputMapperSuffix_) );
         if( !deviceName )
         {
             result = paInsufficientMemory;
@@ -788,9 +783,8 @@ static PaError InitializeOutputDeviceInfo( PaWinMmeHostApiRepresentation *winMme
     }
     else
     {
-        len = WCharStringLen(woc.szPname) + 1;
         deviceName = (char*)PaUtil_GroupAllocateMemory(
-                    winMmeHostApi->allocations, (long)len );
+                    winMmeHostApi->allocations, strlen( woc.szPname ) + 1 );
         if( !deviceName )
         {
             result = paInsufficientMemory;
@@ -869,8 +863,8 @@ PaError PaWinMme_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiInd
     PaWinMmeDeviceInfo *deviceInfoArray;
     int deviceInfoInitializationSucceeded;
     PaTime defaultLowLatency, defaultHighLatency;
-    DWORD_PTR waveInPreferredDevice, waveOutPreferredDevice;
-    DWORD_PTR preferredDeviceStatusFlags;
+    DWORD waveInPreferredDevice, waveOutPreferredDevice;
+    DWORD preferredDeviceStatusFlags;
 
     winMmeHostApi = (PaWinMmeHostApiRepresentation*)PaUtil_AllocateMemory( sizeof(PaWinMmeHostApiRepresentation) );
     if( !winMmeHostApi )
@@ -910,11 +904,11 @@ PaError PaWinMme_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiInd
     /* the following calls assume that if wave*Message fails the preferred device parameter won't be modified */
     preferredDeviceStatusFlags = 0;
     waveInPreferredDevice = -1;
-    waveInMessage( (HWAVEIN)((UINT_PTR)WAVE_MAPPER), DRVM_MAPPER_PREFERRED_GET, (DWORD_PTR)&waveInPreferredDevice, (DWORD_PTR)&preferredDeviceStatusFlags );
+    waveInMessage( (HWAVEIN)WAVE_MAPPER, DRVM_MAPPER_PREFERRED_GET, (DWORD)&waveInPreferredDevice, (DWORD)&preferredDeviceStatusFlags );
 
     preferredDeviceStatusFlags = 0;
     waveOutPreferredDevice = -1;
-    waveOutMessage( (HWAVEOUT)((UINT_PTR)WAVE_MAPPER), DRVM_MAPPER_PREFERRED_GET, (DWORD_PTR)&waveOutPreferredDevice, (DWORD_PTR)&preferredDeviceStatusFlags );
+    waveOutMessage( (HWAVEOUT)WAVE_MAPPER, DRVM_MAPPER_PREFERRED_GET, (DWORD)&waveOutPreferredDevice, (DWORD)&preferredDeviceStatusFlags );
 
     maximumPossibleDeviceCount = 0;
 
@@ -3899,5 +3893,8 @@ HWAVEOUT PaWinMME_GetStreamOutputHandle( PaStream* s, int handleIndex )
     else
         return 0;
 }
+
+
+
 
 

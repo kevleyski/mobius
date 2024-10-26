@@ -2,20 +2,20 @@
 default:
 	@echo src
 	@cd src
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@cd ..
 
 
 clean:
 	@echo src
 	@cd src
-	@$(MAKE) /nologo clean
+	@$(MAKE)clean
 	@cd ..
 
 allclean: 
 	@echo src
 	@cd src
-	@$(MAKE) /nologo allclean
+	@$(MAKE) allclean
 	@cd ..
 
 tag:

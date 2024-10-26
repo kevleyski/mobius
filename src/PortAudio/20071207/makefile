@@ -2,17 +2,17 @@
 default:
 	@echo portaudio/asio
 	@cd asio
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo portaudio/win
 	@cd ../win
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@cd ..
 
 clean:
 	@echo portaudio/asio
 	@cd asio
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo portaudio/win
 	@cd ..\win
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@cd ..

@@ -207,15 +207,15 @@ WindowsDialog::~WindowsDialog()
 {
 }
 
-PRIVATE INT_PTR CALLBACK DialogProcedure(HWND dialog, UINT msg, 
+PRIVATE BOOL CALLBACK DialogProcedure(HWND dialog, UINT msg, 
 									  WPARAM wparam, LPARAM lparam)
 {
-	INT_PTR result = 0;
+	BOOL result = FALSE;
 
 	// we actually will never see this since we don't have a way
 	// to attach the Dialog right now
 	WindowsDialog* ui = (WindowsDialog *)
-        GetWindowLongPtr(dialog, GWLP_USERDATA);
+        GetWindowLong(dialog, GWL_USERDATA);
 
 	if (ui != NULL) {
         result = ui->dialogHandler(msg, wparam, lparam);
@@ -223,7 +223,7 @@ PRIVATE INT_PTR CALLBACK DialogProcedure(HWND dialog, UINT msg,
 	else {
 		switch (msg) {
 			case WM_INITDIALOG: {
-				result = 1;	
+				result = TRUE;	
 			}
 			break;
 
@@ -234,7 +234,7 @@ PRIVATE INT_PTR CALLBACK DialogProcedure(HWND dialog, UINT msg,
 					case IDCANCEL: {
 						// these are standard control constants
 						EndDialog(dialog, id);
-						result = 1;
+						result = TRUE;
 					}
 					break;
 				}
@@ -250,15 +250,15 @@ PRIVATE INT_PTR CALLBACK DialogProcedure(HWND dialog, UINT msg,
 /**
  * Default dialog message handler.
  */
-PUBLIC LRESULT WindowsDialog::dialogHandler(UINT msg, WPARAM wparam, 
+PUBLIC BOOL WindowsDialog::dialogHandler(UINT msg, WPARAM wparam, 
                                            LPARAM lparam)
 {
-	LRESULT result = 0;
+	BOOL result = FALSE;
 
 	switch (msg) {
 
 		case WM_INITDIALOG: {
-			result = 1;	
+			result = TRUE;	
 		}
 		break;
 
@@ -272,7 +272,7 @@ PUBLIC LRESULT WindowsDialog::dialogHandler(UINT msg, WPARAM wparam,
 					// the DialogBox call
 					if (mHandle != NULL)
 					  EndDialog(mHandle, id);
-					result = 1;
+					result = TRUE;
 				}
 				break;
 
@@ -290,7 +290,7 @@ PUBLIC LRESULT WindowsDialog::dialogHandler(UINT msg, WPARAM wparam,
 
 void WindowsDialog::show()
 {
-    INT_PTR result = 0;
+    unsigned long result = 0;
     Dialog* dialog = (Dialog*)mWindow;
 
     if (dialog->getResource() != NULL) {

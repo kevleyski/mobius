@@ -1,10 +1,10 @@
 
 default:
 	@cd 20071207
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@cd ..
 
 clean:
 	@cd 20071207
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@cd ..

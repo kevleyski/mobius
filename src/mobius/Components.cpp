@@ -3595,7 +3595,7 @@ PUBLIC void FocusButton::mousePressed(MouseEvent *e)
 	a->setTargetTrack(mTrack);
 
 	// Trigger id will be the address of the component
-    a->id = (uintptr_t)this;
+	a->id = (long)this;
 	a->trigger = TriggerUI;
 	a->triggerMode = TriggerModeOnce;
 
@@ -3884,7 +3884,7 @@ PUBLIC void TrackGroupButton::mousePressed(MouseEvent *e)
 	a->setTargetTrack(mTrack);
 
 	// Trigger id will be the address of the component
-    a->id = (uintptr_t)this;
+	a->id = (long)this;
 	a->trigger = TriggerUI;
 	a->triggerMode = TriggerModeOnce;
 
@@ -5828,7 +5828,7 @@ LoopStack::LoopStack(MobiusInterface *m, int track)
 	mAction->setFunction(LoopN);
 	mAction->setTargetTrack(track);
 	// Trigger id will be the address of the component
-    mAction->id = (uintptr_t)this;
+	mAction->id = (long)this;
 	mAction->trigger = TriggerUI;
 	// we're not passing down up transitions of the mouse button
 	mAction->triggerMode = TriggerModeOnce;

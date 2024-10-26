@@ -250,7 +250,7 @@ PUBLIC void WindowsTabbedPane::open()
             }
             else {
                 subclassWindowProc();
-                SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
+                SetWindowLong(mHandle, GWL_USERDATA, (LONG)this);
 				mTabbedPane->initVisibility();
 
                 // todo: use TCM_SETPADDING to set the thickness of the margin

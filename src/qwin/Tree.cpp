@@ -133,7 +133,7 @@ PUBLIC void WindowsTree::open()
               printf("Unable to create Tree control\n");
             else {
                 subclassWindowProc();
-                SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
+                SetWindowLong(mHandle, GWL_USERDATA, (LONG)this);
 				mTree->initVisibility();
 
                 // define the tree

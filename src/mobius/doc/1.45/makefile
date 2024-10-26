@@ -90,8 +90,8 @@ clean:
 #
 
 publish:
-	-del -rf docs
+	-rm -rf docs
 	mkdir docs
 	mkdir docs/images
-	copy *.htm docs
-	copy images/*.gif docs/images
+	cp *.htm docs
+	cp images/*.gif docs/images

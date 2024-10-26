@@ -8,31 +8,31 @@ clean: clean2.4
 make2.4:
 	@echo vst/2.4
 	@cd 2.4
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@cd ..
 
 clean2.4:
 	@echo vst/2.4
 	@cd 2.4
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@cd ..
 
 
 make2.3:
 	@echo vst/2.3
 	@cd 2.3
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo vst/2.3/examples
 	@cd examples
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@cd ..\..
 
 clean2.3:
 	@echo vst/2.3
 	@cd 2.3
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo vst/2.3/examples
 	@cd examples
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@cd ..\..
 

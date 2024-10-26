@@ -300,7 +300,7 @@ PUBLIC void WindowsScrollBar::open()
               printf("Unable to create ScrollBar control\n");
             else {
                 subclassWindowProc();
-                SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
+                SetWindowLong(mHandle, GWL_USERDATA, (LONG)this);
 				mScrollBar->initVisibility();
                 update();
             }

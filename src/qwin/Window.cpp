@@ -711,7 +711,7 @@ PUBLIC WindowsWindow::WindowsWindow(Window* win)
 PUBLIC WindowsWindow::~WindowsWindow() 
 {
     // shouldn't still have a handlemake sure 
-    (void)SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)NULL);
+    (void)SetWindowLong(mHandle, GWL_USERDATA, (LONG)NULL);
 
     delete mWindowEvent;
     delete mMouseEvent;
@@ -814,7 +814,7 @@ PUBLIC void WindowsWindow::setBackground(Color* c)
     if (c != NULL && mHandle != NULL) {
         WindowsColor* wc = (WindowsColor*)c->getNativeColor();
         HBRUSH current = (HBRUSH)
-            SetClassLongPtr(mHandle, GCLP_HBRBACKGROUND, (LONG_PTR)wc->getBrush());
+            SetClassLong(mHandle, GCL_HBRBACKGROUND, (long)wc->getBrush());
 
         // Petzold would call DeleteObject on the previous brush here,
         // need to be much more rigerous about the ownership of these
@@ -1034,7 +1034,7 @@ PUBLIC void WindowsWindow::open()
 		else {
 			// Store our little extension wart in the client window
 			// supposed to use SetWindowLongPtr, but can't seem to find it
-			(void)SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)this);
+			(void)SetWindowLong(mHandle, GWL_USERDATA, (LONG)this);
 
 			// capture the actual bounds
             // ?? this should be the same as mBounds unless we asked
@@ -1051,8 +1051,8 @@ PUBLIC void WindowsWindow::open()
 			if (icon != NULL) {
 				HICON hicon = LoadIcon(instance, icon);
 				if (hicon) {
-					SetClassLongPtr(mHandle, GCLP_HICON, (LONG_PTR)hicon);
-					SetClassLongPtr(mHandle, GCLP_HICONSM, (LONG_PTR)hicon);
+					SetClassLong(mHandle, GCL_HICON, (LONG)hicon);
+					SetClassLong(mHandle, GCL_HICONSM, (LONG)hicon);
 				}
 				else
 				  printf("Couldn't load icon %s\n", icon);
@@ -1211,12 +1211,12 @@ PRIVATE void WindowsWindow::setupToolTips(Component* c)
         info.cbSize = sizeof(info);
         info.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
         info.hwnd = mHandle;
-        info.uId = (LONG_PTR)chandle;
+        info.uId = (LONG)chandle;
         info.hinst = getContext()->getInstance();
         info.lpszText = (char*)tip;
         info.lParam = NULL;
         GetWindowRect(chandle, &info.rect);
-        SendMessage(mToolTip, TTM_ADDTOOL, 0, (LONG_PTR)&info);
+        SendMessage(mToolTip, TTM_ADDTOOL, 0, (LONG)&info);
     }
 
     Container* container = c->isContainer();
@@ -1308,9 +1308,9 @@ PUBLIC int WindowsWindow::run()
  * In the old days, this would call out to registered handler functions,
  * here we could use subclassing?
  */
-PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lparam)
+PUBLIC long WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lparam)
 {
-	LRESULT result = 0;
+	long result = 0;
 	bool handled = false;
 
     //char buf[128];
@@ -1367,7 +1367,7 @@ PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lpa
         // handle to the control, or parent menu for menu items
         HWND win = di->hwndItem;
         WindowsComponent* ui = (WindowsComponent*)
-            GetWindowLongPtr(win, GWLP_USERDATA);
+            GetWindowLong(win, GWL_USERDATA);
 
         if (ui != NULL) {
             Component* c = ui->getComponent();
@@ -1394,7 +1394,7 @@ PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lpa
         int code = HIWORD(wparam);
         int id = LOWORD(wparam);
         WindowsComponent* ui = (WindowsComponent*)
-            GetWindowLongPtr(control, GWLP_USERDATA);
+            GetWindowLong(control, GWL_USERDATA);
 
         if (ui != NULL)
           ui->command(code); // need to pass lparam?
@@ -1461,11 +1461,11 @@ PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lpa
         // extended information, if so the whole thing should
         // be passed to the Component, for now assume that
         // its just a command code
-        //int id = wparam;    // don't really need this
+        int id = wparam;    // don't really need this
         NMHDR* info = (NMHDR*)lparam;
         HWND control = info->hwndFrom;
         WindowsComponent* ui = (WindowsComponent*)
-            GetWindowLongPtr(control, GWLP_USERDATA);
+            GetWindowLong(control, GWL_USERDATA);
         if (ui != NULL)
           ui->notify(info->code);
     }
@@ -1711,7 +1711,7 @@ PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lpa
         else {
             // this must be a scroll bar control
             WindowsScrollBar* ui = (WindowsScrollBar*)
-                GetWindowLongPtr((HWND)lparam, GWLP_USERDATA);
+                GetWindowLong((HWND)lparam, GWL_USERDATA);
             if (ui != NULL)
               ui->scroll(wparam);
 
@@ -1784,7 +1784,7 @@ PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lpa
 
         // Break the link between the HWND and this object so we don't
         // receive any more spurious messages
-        (void)SetWindowLongPtr(mHandle, GWLP_USERDATA, (LONG_PTR)NULL);
+        (void)SetWindowLong(mHandle, GWL_USERDATA, (LONG)NULL);
 
         // must assume this is no longer valid
 		mHandle = NULL;
@@ -1809,7 +1809,7 @@ PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lpa
         HDC dc = (HDC)wparam;
         HWND win = (HWND)lparam;
         WindowsComponent* ui = (WindowsComponent*)
-            GetWindowLongPtr(win, GWLP_USERDATA);
+            GetWindowLong(win, GWL_USERDATA);
         if (ui != NULL) {
             // may return a brush
             // !! since colorHook is a UI method,just return a brush
@@ -1819,7 +1819,7 @@ PUBLIC LRESULT WindowsWindow::messageHandler(UINT msg, WPARAM wparam, LPARAM lpa
             Color* color = ui->colorHook(mEventGraphics);
             if (color != NULL) {
                 WindowsColor* wc = (WindowsColor*)color->getNativeColor();
-                result = (LONG_PTR)wc->getBrush();
+                result = (long)wc->getBrush();
                 handled = true;
             }
         }
@@ -2162,7 +2162,7 @@ PUBLIC LRESULT CALLBACK WindowProcedure(HWND window, UINT msg,
 
 	// retrieve our extension
 	// supposed to use GetWindowLongPtr, but can't seem to find it
-	WindowsWindow* ui = (WindowsWindow *)GetWindowLongPtr(window, GWLP_USERDATA);
+	WindowsWindow* ui = (WindowsWindow *)GetWindowLong(window, GWL_USERDATA);
 
 	if (ui == NULL) {
 		// can see this during initialization before we set our extension
@@ -2191,14 +2191,14 @@ PUBLIC LRESULT CALLBACK WindowProcedure(HWND window, UINT msg,
  * This is the same as WindowProcedure but calls DefDlgProc instead
  * of DefWindowProc if the default handler has to be used.
  */
-PUBLIC LRESULT CALLBACK DefaultDialogProcedure(HWND window, UINT msg, 
+PUBLIC LRESULT CALLBACK DialogProcedure(HWND window, UINT msg, 
                                         WPARAM wparam, LPARAM lparam)
 {
 	LRESULT res = 0;
 
 	// retrieve our extension
 	// supposed to use GetWindowLongPtr, but can't seem to find it
-	WindowsWindow* ui = (WindowsWindow *)GetWindowLongPtr(window, GWLP_USERDATA);
+	WindowsWindow* ui = (WindowsWindow *)GetWindowLong(window, GWL_USERDATA);
 
 	if (ui == NULL) {
         LRESULT res = 0;

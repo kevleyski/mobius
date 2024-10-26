@@ -2,62 +2,62 @@
 default:
 	@echo PortAudio
 	@cd PortAudio
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo SoundTouch
 	@cd ../SoundTouch
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo vst
 	@cd ../vst
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo util
 	@cd ..\util
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo osc
 	@cd ..\osc
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo qwin
 	@cd ..\qwin
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo midi
 	@cd ..\midi
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo audio
 	@cd ..\audio
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo mobius
 	@cd ..\mobius
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@cd ..
 
 clean:
 	@echo util
 	@cd util
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo osc
 	@cd ..\osc
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo qwin
 	@cd ..\qwin
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo midi
 	@cd ..\midi
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo audio
 	@cd ..\audio
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo mobius
 	@cd ..\mobius
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@cd ..
 
 allclean: clean
 	@echo PortAudio
 	@cd PortAudio
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo SoundTouch
 	@cd ../SoundTouch
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@echo vst
 	@cd ../vst
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@cd ..

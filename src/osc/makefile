@@ -19,7 +19,7 @@ INCLUDES = -I../util -I./oscpack/osc
 liboscpack:
 	@echo oscpack
 	@cd oscpack
-	@$(MAKE) /nologo
+	@$(MAKE)
 	@echo osc
 	@cd ..
 
@@ -68,7 +68,7 @@ osctest: osctest.exe
 clean: standardclean
 	@echo oscpack
 	@cd oscpack
-	@$(MAKE) /nologo clean
+	@$(MAKE) clean
 	@cd ..
 
 ######################################################################
